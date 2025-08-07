@@ -1,10 +1,10 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; \
-      script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://rmeudvhvqlddqqkiziyo.supabase.co; \
-      style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; \
-      font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.gstatic.com; \
-      img-src 'self' data: https://cdn.jsdelivr.net https://rmeudvhvqlddqqkiziyo.supabase.co; \
-      connect-src 'self' https://rmeudvhvqlddqqkiziyo.supabase.co; \
+    Content-Security-Policy = "default-src 'self'; 
+      script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://rmeudvhvqlddqqkiziyo.supabase.co;
+      style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; 
+      font-src 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.gstatic.com; 
+      img-src 'self' data: https://cdn.jsdelivr.net https://rmeudvhvqlddqqkiziyo.supabase.co; 
+      connect-src 'self' https://rmeudvhvqlddqqkiziyo.supabase.co; 
       media-src 'self' https://rmeudvhvqlddqqkiziyo.supabase.co;"
