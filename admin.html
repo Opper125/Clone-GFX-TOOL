@@ -1096,7 +1096,7 @@ body {
         GLOBAL CHAT (ADMIN)
       </h3>
       <div id="chat-messages" class="bg-black bg-opacity-30 rounded-xl p-4 h-64 md:h-96 overflow-y-auto mb-6 border border-gray-700">
-        <div class="loading-spinner mx-auto mb-4"></div>
+        <div class="loading-spinner mx-auto mb-2"></div>
         <p class="text-center text-text-secondary">Loading messages...</p>
       </div>
       <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
@@ -1106,9 +1106,10 @@ body {
                 class="myanmar-btn flex items-center justify-center space-x-2 md:self-end">
           <i class="fas fa-paper-plane"></i>
           <span>SEND</span>
-          </button>
-        </div>
+        </button>
       </div>
+    </div>
+  </div>
 
    Support Section 
   <div id="support-section" class="admin-section hidden">
@@ -1293,18 +1294,18 @@ body {
 
  Support Message Details Modal 
 <div id="support-message-modal" class="modal hidden">
-  <div class="modal-content max-w-2xl">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-orbitron font-bold text-accent-purple">SUPPORT MESSAGE DETAILS</h2>
-      <button onclick="closeSupportMessageModal()" class="text-text-secondary hover:text-accent-red">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-    <div id="support-message-modal-content">
-      <div class="loading-spinner mx-auto mb-4"></div>
-      <p class="text-center text-text-secondary">Loading...</p>
-    </div>
+<div class="modal-content max-w-2xl">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-orbitron font-bold text-accent-purple">SUPPORT MESSAGE DETAILS</h2>
+    <button onclick="closeSupportMessageModal()" class="text-text-secondary hover:text-accent-red">
+      <i class="fas fa-times"></i>
+    </button>
   </div>
+  <div id="support-message-modal-content">
+    <div class="loading-spinner mx-auto mb-4"></div>
+    <p class="text-center text-text-secondary">Loading...</p>
+  </div>
+</div>
 </div>
 
  Confirm Delete Modal 
@@ -1392,7 +1393,8 @@ const utils = {
 };
 
 // Initialize
-window.addEventListener('load', initializeApp); // Changed to window.load
+// Changed from DOMContentLoaded to window.onload to ensure all scripts are loaded
+window.addEventListener('load', initializeApp);
 
 async function initializeApp() {
   updateConnectionStatus('connecting');
@@ -1408,7 +1410,8 @@ async function initializeApp() {
     }
 
     // Initialize Supabase
-    if (typeof window.Supabase !== 'undefined') { // Changed to window.Supabase
+    // Explicitly check window.Supabase
+    if (typeof window.Supabase !== 'undefined') {
       state.supabase = window.Supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {
         auth: { persistSession: false },
         realtime: { params: { eventsPerSecond: 10 } }
@@ -1428,7 +1431,8 @@ async function initializeApp() {
       state.reconnectAttempts = 0;
       
     } else {
-      throw new Error('Supabase library (supabase.min.js) ကို ရှာမတွေ့ပါ. CDN link ကို စစ်ဆေးပါ သို့မဟုတ် network ပြဿနာ ရှိနိုင်ပါသည်။'); // More specific error message
+      // This is the critical part. If Supabase is still undefined, it means the CDN script didn't load.
+      throw new Error('Supabase library (supabase.min.js) ကို ရှာမတွေ့ပါ. CDN link ကို စစ်ဆေးပါ သို့မဟုတ် network ပြဿနာ ရှိနိုင်ပါသည်။');
     }
   } catch (error) {
     console.error('Initialization error:', error);
@@ -1853,8 +1857,8 @@ async function generateAndAddKey() {
     // Call the RPC function to create a new key
     const { data, error } = await state.supabase.rpc('create_new_access_key', {
         p_custom_key_text: keyText || null, // Pass null if empty to auto-generate
-        p_expires_at: expiryDate, // Pass the expiry date
-        p_is_active: isActive // Pass the active status
+        p_expires_at: expiryDate,
+        p_is_active: isActive
     });
 
     if (error) throw error;
@@ -2328,7 +2332,6 @@ async function viewNews(newsId) {
     if (data.tiktok_link) socialLinksHtml += `<a href="${data.tiktok_link}" target="_blank" class="text-text-secondary hover:text-text-primary"><i class="fab fa-tiktok text-2xl"></i></a>`;
     if (data.telegram_link) socialLinksHtml += `<a href="${data.telegram_link}" target="_blank" class="text-blue-400 hover:text-blue-300"><i class="fab fa-telegram text-2xl"></i></a>`;
     if (data.facebook_link) socialLinksHtml += `<a href="${data.facebook_link}" target="_blank" class="text-blue-600 hover:text-blue-500"><i class="fab fa-facebook text-2xl"></i></a>`;
-
 
     document.getElementById('news-modal-content').innerHTML = `
       <div class="space-y-4">
