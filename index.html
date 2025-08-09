@@ -1711,15 +1711,22 @@ async function userLogin(isSilent = false) {
     showLoading(true);
 
     // Use Supabase RPC to call the user_login function
-    const { data, error } = await state.supabase.rpc('user_login', { input_key_text: loginKey });
+    // user_login RPC ကို ခေါ်ဆိုပြီးနောက်
+const { data, error } = await supabase.rpc('user_login', { input_key_text: key });
 
-    if (error) throw error;
-
-    if (data && data.length > 0) {
-      const userData = data[0];
-      if (userData.key_is_active === false) {
-        throw new Error('Your Key is inactive.');
-      }
+if (data && data.length > 0) {
+    const profileId = data[0].profile_id;
+    // Supabase Auth user metadata ကို update လုပ်ခြင်း
+    // ၎င်းသည် JWT claim တွင် profile_id ကို ထည့်သွင်းပေးပါမည်။
+    await supabase.auth.updateUser({
+        data: { profile_id: profileId }
+    });
+    console.log('Profile ID set in JWT claims:', profileId);
+    // ကျန်ရှိသော login logic ကို ဆက်လက်လုပ်ဆောင်ပါ။
+} else {
+    // Login မအောင်မြင်ပါက
+    console.error('Login failed or no profile found.');
+}
       if (userData.is_banned === true) {
         throw new Error('Your account is banned.');
       }
@@ -1847,7 +1854,7 @@ async function createProfile() {
     state.userProfile.is_banned = data.is_banned;
 
     // Update the dummy session with the new profile_id as auth.uid()
-    const dummyJwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ1aWQiOiJ" + data.id + "\",\"role\":\"authenticated\"}";
+    const dummyJwt = "oF45hT1e2dwi9n4T607bK7/t1IB+Q7BUgADv3YEC6cpUtsaw56JURTDVudlBtCevdkvZMuCNDouKhC3WeZVfhQ==" + data.id + "\",\"role\":\"authenticated\"}";
     state.supabase.auth.setSession({
         access_token: dummyJwt,
         refresh_token: dummyJwt,
