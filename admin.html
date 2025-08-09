@@ -1400,11 +1400,11 @@ async function initializeApp() {
   
   try {
     // Check if Supabase config is set
-    if (!CONFIG.SUPABASE_URL || CONFIG.SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    if (!CONFIG.SUPABASE_URL || CONFIG.SUPABASE_URL === 'https://rmeudvhvqlddqqkiziyo.supabase.co') {
       throw new Error('Supabase URL လိုအပ်ပါတယ်! CONFIG အပိုင်းထဲမှာ သင့် Supabase URL ကို ထည့်ပါ။');
     }
 
-    if (!CONFIG.SUPABASE_ANON_KEY || CONFIG.SUPABASE_ANON_KEY === 'YOUR_SUPABASE_ANON_KEY') {
+    if (!CONFIG.SUPABASE_ANON_KEY || CONFIG.SUPABASE_ANON_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtZXVkdmh2cWxkZHFxa2l6aXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5OTMxOTIsImV4cCI6MjA2OTU2OTE5Mn0.xFgMv-K5o5yyTpe4U2YJK5jC9GPJp98G4cgD9p5W4ak') {
       throw new Error('Supabase Anon Key လိုအပ်ပါတယ်! CONFIG အပိုင်းထဲမှာ သင့် Supabase Anon Key ကို ထည့်ပါ။');
     }
 
