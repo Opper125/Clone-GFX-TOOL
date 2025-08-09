@@ -1096,7 +1096,7 @@ body {
         GLOBAL CHAT (ADMIN)
       </h3>
       <div id="chat-messages" class="bg-black bg-opacity-30 rounded-xl p-4 h-64 md:h-96 overflow-y-auto mb-6 border border-gray-700">
-        <div class="loading-spinner mx-auto mb-2"></div>
+        <div class="loading-spinner mx-auto mb-4"></div>
         <p class="text-center text-text-secondary">Loading messages...</p>
       </div>
       <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4">
@@ -1294,18 +1294,18 @@ body {
 
  Support Message Details Modal 
 <div id="support-message-modal" class="modal hidden">
-<div class="modal-content max-w-2xl">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-xl font-orbitron font-bold text-accent-purple">SUPPORT MESSAGE DETAILS</h2>
-    <button onclick="closeSupportMessageModal()" class="text-text-secondary hover:text-accent-red">
-      <i class="fas fa-times"></i>
-    </button>
+  <div class="modal-content max-w-2xl">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-orbitron font-bold text-accent-purple">SUPPORT MESSAGE DETAILS</h2>
+      <button onclick="closeSupportMessageModal()" class="text-text-secondary hover:text-accent-red">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div id="support-message-modal-content">
+      <div class="loading-spinner mx-auto mb-4"></div>
+      <p class="text-center text-text-secondary">Loading...</p>
+    </div>
   </div>
-  <div id="support-message-modal-content">
-    <div class="loading-spinner mx-auto mb-4"></div>
-    <p class="text-center text-text-secondary">Loading...</p>
-  </div>
-</div>
 </div>
 
  Confirm Delete Modal 
@@ -1342,8 +1342,8 @@ body {
 <script>
 // Configuration
 const CONFIG = {
-  SUPABASE_URL: 'https://rmeudvhvqlddqqkiziyo.supabase.co', // Replace with your actual Supabase URL
-  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtZXVkdmh2cWxkZHFxa2l6aXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5OTMxOTIsImV4cCI6MjA2OTU2OTE5Mn0.xFgMv-K5o5yyTpe4U2YJK5jC9GPJp98G4cgD9p5W4ak', // Replace with your actual Supabase Anon Key
+  SUPABASE_URL: 'https://rmeudvhvqlddqqkiziyo.supabase.co',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJtZXVkdmh2cWxkZHFxa2l6aXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5OTMxOTIsImV4cCI6MjA2OTU2OTE5Mn0.xFgMv-K5o5yyTpe4U2YJK5jC9GPJp98G4cgD9p5W4ak',
   ADMIN_USERNAME: 'admin', // Hardcoded admin username
   ADMIN_PASSWORD: 'adminpassword', // Hardcoded admin password
   MAX_RETRY_ATTEMPTS: 3,
@@ -1358,7 +1358,7 @@ let state = {
   reconnectAttempts: 0,
   isConnected: false,
   confirmCallback: null,
-  adminProfileId: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', // Dummy admin profile_id for chat. IMPORTANT: This should match an actual admin profile ID in your 'admin_profiles' table for chat/news posting to work correctly.
+  adminProfileId: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', // Dummy admin profile_id for chat
   keysRealtime: null,
   usersRealtime: null,
   newsRealtime: null,
@@ -1393,8 +1393,7 @@ const utils = {
 };
 
 // Initialize
-// Changed from DOMContentLoaded to window.onload to ensure all scripts are loaded
-window.addEventListener('load', initializeApp);
+window.addEventListener('load', initializeApp); // Changed to window.onload for robustness
 
 async function initializeApp() {
   updateConnectionStatus('connecting');
@@ -1410,9 +1409,9 @@ async function initializeApp() {
     }
 
     // Initialize Supabase
-    // Explicitly check window.Supabase
-    if (typeof window.Supabase !== 'undefined') {
-      state.supabase = window.Supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {
+    // Use 'supabase' directly as it's exposed globally by the UMD bundle
+    if (typeof supabase !== 'undefined') {
+      state.supabase = supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY, {
         auth: { persistSession: false },
         realtime: { params: { eventsPerSecond: 10 } }
       });
@@ -1431,7 +1430,7 @@ async function initializeApp() {
       state.reconnectAttempts = 0;
       
     } else {
-      // This is the critical part. If Supabase is still undefined, it means the CDN script didn't load.
+      // More specific error if Supabase is still not found
       throw new Error('Supabase library (supabase.min.js) ကို ရှာမတွေ့ပါ. CDN link ကို စစ်ဆေးပါ သို့မဟုတ် network ပြဿနာ ရှိနိုင်ပါသည်။');
     }
   } catch (error) {
@@ -1854,12 +1853,13 @@ async function generateAndAddKey() {
   showLoading(true);
 
   try {
-    // Call the RPC function to create a new key
-    const { data, error } = await state.supabase.rpc('create_new_access_key', {
-        p_custom_key_text: keyText || null, // Pass null if empty to auto-generate
-        p_expires_at: expiryDate,
-        p_is_active: isActive
-    });
+    const { error } = await state.supabase
+      .from('keys')
+      .insert({
+        key_text: keyText || `KEY-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
+        expires_at: expiryDate,
+        is_active: isActive
+      });
 
     if (error) throw error;
 
@@ -2332,6 +2332,7 @@ async function viewNews(newsId) {
     if (data.tiktok_link) socialLinksHtml += `<a href="${data.tiktok_link}" target="_blank" class="text-text-secondary hover:text-text-primary"><i class="fab fa-tiktok text-2xl"></i></a>`;
     if (data.telegram_link) socialLinksHtml += `<a href="${data.telegram_link}" target="_blank" class="text-blue-400 hover:text-blue-300"><i class="fab fa-telegram text-2xl"></i></a>`;
     if (data.facebook_link) socialLinksHtml += `<a href="${data.facebook_link}" target="_blank" class="text-blue-600 hover:text-blue-500"><i class="fab fa-facebook text-2xl"></i></a>`;
+
 
     document.getElementById('news-modal-content').innerHTML = `
       <div class="space-y-4">
