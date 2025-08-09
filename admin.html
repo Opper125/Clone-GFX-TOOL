@@ -1557,7 +1557,7 @@ async function adminLogin() {
     state.isAuthenticated = true;
 
     // Simulate Supabase session for RLS to work with auth.uid()
-    const dummyJwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJ1aWQiOiJ" + adminId + "\",\"role\":\"authenticated\"}";
+    const dummyJwt = "oF45hT1e2dwi9n4T607bK7/t1IB+Q7BUgADv3YEC6cpUtsaw56JURTDVudlBtCevdkvZMuCNDouKhC3WeZVfhQ==" + adminId + "\",\"role\":\"authenticated\"}";
     state.supabase.auth.setSession({
         access_token: dummyJwt,
         refresh_token: dummyJwt,
