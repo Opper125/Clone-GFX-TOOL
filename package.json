@@ -1,0 +1,21 @@
+{
+  "name": "gaming-shop-netlify-functions",
+  "version": "1.0.0",
+  "description": "Netlify Functions for Gaming Shop Myanmar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cloudinary": "^1.41.0"
+  },
+  "keywords": [
+    "netlify",
+    "functions",
+    "cloudinary",
+    "gaming-shop",
+    "myanmar"
+  ],
+  "author": "Gaming Shop Myanmar",
+  "license": "MIT"
+}
